@@ -20,20 +20,24 @@ The test cases are generated so that the answer fits in a 32-bit integer.
 
 class Solution:
     def numDecodings(self, s: str) -> int:
-        dp = {len(s): 1}
-
-        def dfs(i):
-            print(dp)
-            if i in dp:
-                return dp[i]
+        """
+        num leaves = num decodings
+        num_leaves(0) = num_leaves(1) + num_leaves(2)
+        decision tree is height n
+        """
+        cache = {len(s): 1}
+        def num_leaves(i):
+            if i in cache:
+                return cache[i]
             if s[i] == "0":
                 return 0
-            res = dfs(i + 1)
-            if i + 1 < len(s) and (s[i] == "1" or (s[i] == "2" and s[i+1] in "0123456")):
-                res += dfs(i + 2)
-            dp[i] = res
+            res = num_leaves(i + 1)
+            # does node have leaves
+            if i + 1 < len(s) and (s[i] == "1" or (s[i] == '2' and s[i+1] in "0123456")):
+                res += num_leaves(i + 2)
+            cache[i] = res
             return res
-        return dfs(0)
+        return num_leaves(0)
 
 
 if __name__ == '__main__':
